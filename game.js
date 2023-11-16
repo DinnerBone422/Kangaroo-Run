@@ -12,7 +12,7 @@ var score=0;
 
 var gameOver, restart;
 
-function preload(){
+function preload() {
   kangaroo_running =   loadAnimation("assets/kangaroo1.png","assets/kangaroo2.png","assets/kangaroo3.png");
   kangaroo_collided = loadAnimation("assets/kangaroo1.png");
   jungleImage = loadImage("assets/bg.png");
@@ -32,7 +32,12 @@ function setup() {
   console.log(" ");
   console.log("Resorces like images, sounds, ETC BY:");
   console.log("https://code.byjusfutureschool.com/");
-  createCanvas(800, 400);
+	
+  canvasW = windowWidth/1.5;
+	canvasH = windowHeight/1.5;
+	var canvas = createCanvas(canvasW, canvasH);
+	canvas.parent('Game');
+	rectMode(CENTER);
 
   score = 0;
 
@@ -71,18 +76,12 @@ function draw() {
   
   kangaroo.x=camera.position.x-270;
    
-  if (gameState===PLAY){
+  if (gameState === PLAY) {
 
     jungle.velocityX=-3
 
-    if(jungle.x<100)
-    {
-       jungle.x=400
-    }
-       
-    if(keyDown("space")&& kangaroo.y>270) {
-      jumpSound.play();
-      kangaroo.velocityY = -16;
+    if (jungle.x<100) {
+      jungle.x=400
     }
   
     kangaroo.velocityY = kangaroo.velocityY + 0.8
@@ -91,16 +90,16 @@ function draw() {
 
     kangaroo.collide(invisibleGround);
     
-    if(obstaclesGroup.isTouching(kangaroo)){
+    if (obstaclesGroup.isTouching(kangaroo)) {
       collidedSound.play();
       gameState = END;
     }
-    if(shrubsGroup.isTouching(kangaroo)){
+
+    if (shrubsGroup.isTouching(kangaroo)) {
       score = score +1;
       shrubsGroup.destroyEach();
     }
-  }
-  else if (gameState === END) {
+  } else if (gameState === END) {
     //set velcity of each game object to 0
     kangaroo.velocityY = 0;
     jungle.velocityX = 0;
@@ -114,9 +113,7 @@ function draw() {
     obstaclesGroup.setLifetimeEach(-1);
     shrubsGroup.setLifetimeEach(-1);
     
-  }
-
-  else if (gameState === WIN) {
+  } else if (gameState === WIN) {
     jungle.velocityX = 0;
     kangaroo.velocityX = 0;
 
@@ -127,7 +124,6 @@ function draw() {
 
     obstaclesGroup.setLifetimeEach(-1);
     shrubsGroup.setLifetimeEach(-1);
-
   }
 
   drawSprites();
@@ -182,7 +178,7 @@ function spawnShrubs() {
 }
 
 function spawnObstacles() {
-  if(frameCount % 120 === 0) {
+  if (frameCount % 120 === 0) {
 
     var obstacle = createSprite(camera.position.x+400,330,40,40);
     obstacle.setCollider("rectangle",0,0,200,200)
@@ -195,5 +191,12 @@ function spawnObstacles() {
     //add each obstacle to the group
     obstaclesGroup.add(obstacle);
     
+  }
+}
+
+function jump() {
+  if (kangaroo.y>270 && gameState === PLAY) {
+    jumpSound.play();
+    kangaroo.velocityY = -16;
   }
 }
